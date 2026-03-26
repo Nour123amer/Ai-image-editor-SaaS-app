@@ -1,9 +1,11 @@
 "use client"
 import { Button } from '@nextui-org/react'
 import { Sparkles } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 export default function Hero() {
+  const router = useRouter();
   return (
     <section className="h-[100vh] pt-12 flex items-center justify-center px-4 ">
       <div className="max-w-4xl text-center flex flex-col items-center gap-6">
@@ -28,15 +30,16 @@ export default function Hero() {
         <div className="flex gap-4 mt-2">
           <Button
             size="lg"
-            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium px-6"
-          >
+            className="cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium px-6"
+         onClick={()=>{router.push("/auth/sign-in")}}
+         >
             Try it free now
           </Button>
 
           <Button
             size="lg"
             variant="bordered"
-            className="border-gray-300 text-gray-700 px-6"
+            className="cursor-pointer border-gray-300 text-gray-700 px-6"
           >
             View Demo
           </Button>

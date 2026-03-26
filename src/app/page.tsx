@@ -4,6 +4,10 @@ import Header from "~/components/home/navbar";
 import Hero from "~/components/home/hero";
 import Tools from "~/components/home/Tools";
 import Steps from "~/components/home/Steps";
+import Reviews from "~/components/home/Reviews";
+import Pricing from "~/components/home/Pricing";
+import CTA from "~/components/home/CTA";
+import Footer from "~/components/home/Footer";
 
 export default function HomePage() {
   return (
@@ -12,6 +16,10 @@ export default function HomePage() {
       <Hero />
       <Tools />
       <Steps />
+      <Reviews />
+      <Pricing />
+      <CTA />
+      <Footer />
       
     </main>
   );

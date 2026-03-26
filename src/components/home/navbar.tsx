@@ -1,5 +1,6 @@
 "use client";
 
+import { RedirectToSignIn } from "@daveyplate/better-auth-ui";
 import {
     Navbar,
     NavbarBrand,
@@ -11,11 +12,13 @@ import {
     NavbarItem,
     Button,
 } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const router = useRouter()
 
     return (
         <Navbar className="z-50 bg-white bg-gray-100 h-20 top-0 fixed text-gray-700" position="sticky" onMenuOpenChange={setIsMenuOpen}>
@@ -28,24 +31,26 @@ export default function Header() {
 
             <NavbarContent >
                 <NavbarMenuItem>
-                    <Link className="text-gray-900" href="#">Features</Link>
+                    <Link className="text-gray-900" href="#features">Features</Link>
                 </NavbarMenuItem>
                 <NavbarMenuItem>
-                    <Link className="text-gray-900" href="#">Pricing</Link>
+                    <Link className="text-gray-900" href="#pricing">Pricing</Link>
                 </NavbarMenuItem>
                 <NavbarMenuItem>
-                    <Link className="text-gray-900" href="#">Reviews</Link>
+                    <Link className="text-gray-900" href="#reviews">Reviews</Link>
                 </NavbarMenuItem>
             </NavbarContent>
 
             <NavbarContent justify="end">
                 <NavbarItem>
-                    <Button 
+                           <Button onClick={()=>{router.push("/auth/sign-in")}}
                     className="cursor-pointer hover:bg-purple-500 hover:text-white font-bold"
-                    variant="light">Sign In</Button>
+                    variant="light">Sign In</Button>                 
                 </NavbarItem>
                 <NavbarItem>
-                    <Button className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold">Try Free</Button>
+                    <Button 
+                    onClick={()=>{router.push("/auth/sign-in")}}
+                    className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold">Try Free</Button>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>

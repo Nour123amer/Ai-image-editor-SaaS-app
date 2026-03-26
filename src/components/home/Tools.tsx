@@ -76,7 +76,7 @@ export default function Tools() {
   ];
 
   return (
-    <section className="w-full max-w-[1200px] mx-auto px-6 py-24">
+    <section id="features" className="w-full max-w-[1200px] mx-auto px-6 py-24">
       {/* TITLE */}
       <div className="text-center mb-14">
         <h2 className="text-3xl sm:text-4xl font-bold ">
