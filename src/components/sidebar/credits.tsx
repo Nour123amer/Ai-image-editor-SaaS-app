@@ -3,7 +3,7 @@ import { getUserCredits } from "~/actions/users";
 
 export default async function Credits() {
   const result = await getUserCredits();
-  const credits = result.success ? result.credits : 0;
+  const credits = result.success ? result.credits : 30;
 
   return (
     <div className="group flex items-center gap-2">

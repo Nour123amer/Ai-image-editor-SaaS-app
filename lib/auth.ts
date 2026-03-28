@@ -11,9 +11,10 @@ import {
   webhooks,
 } from "@polar-sh/better-auth";
 import { db } from "~/server/db";
+import { prisma } from "~/lib/prisma";
 
 
-const prisma= new PrismaClient();
+// const prisma= new PrismaClient();
 
 
 const polarClient = new Polar({

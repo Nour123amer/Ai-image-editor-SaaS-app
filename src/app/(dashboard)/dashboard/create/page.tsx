@@ -6,12 +6,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
-import { Image as ImageKitImage } from "@imagekit/next";
+import { Image as ImageKitImage, upload } from "@imagekit/next";
 import { authClient } from 'lib/auth-client';
 import { createProject, deducateCredits, getUserProjects } from '~/actions/projects';
 import { toast } from 'sonner';
-
-
 
 interface UploadImage {
   fileId: string;
@@ -31,9 +29,15 @@ interface Project {
   updatedAt: Date;
 }
 
+interface Transformation {
+  aiRemoveBackground?: true;
+  aiUpscale?: true;
+  raw?: string;
+}
+
 interface UploadAuthResponse {
   signature: string;
-  expire: string;
+  expire: number;
   token: string;
   publicKey: string;
 }
@@ -41,11 +45,11 @@ interface UploadAuthResponse {
 export default function createPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [isUploading, setIsUploading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const [upLoadedImage, setUploadedImage] = useState<UploadImage | null>(null);
-  const [transformations, setTransformations] = useState<object[]>([]);
+  const [transformations, setTransformations] = useState<Transformation[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [userProjects, setUserProjects] = useState<object[]>([]);
+  const [userProjects, setUserProjects] = useState<Project[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [objectInput, setObjectInput] = useState("");
   const [progress, setProgress] = useState(0);
@@ -88,43 +92,28 @@ export default function createPage() {
     setTransformations([])
   }
 
-  //  const authenticator = async () => {
-  //     try {
-  //         // Perform the request to the upload authentication endpoint.
-  //         const response = await fetch("/api/upload-auth");
-  //         if (!response.ok) {
-  //             // If the server response is not successful, extract the error text for debugging.
-  //             const errorText = await response.text();
-  //             throw new Error(`Request failed with status ${response.status}: ${errorText}`);
-  //         }
-
-  //         // Parse and destructure the response JSON for upload credentials.
-  //         const data = await response.json();
-  //         const { signature, expire, token, publicKey } = data;
-  //         return { signature, expire, token, publicKey };
-  //     } catch (error) {
-  //         // Log the original error for debugging before rethrowing a new error.
-  //         console.error("Authentication error:", error);
-  //         throw new Error("Authentication request failed");
-  //     }
-  // };
-
   const uploadFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file?.type.startsWith("image/")) return;
 
-    setIsLoading(true);
+    setIsUploading(true);
     try {
       const authParams = await getUploadAuth();
       const result = await upload({
         file,
         fileName: file.name,
         folder: "/ai-image/editor",
-        ...authParams
+        // auth params
+        token: authParams.token,
+        expire: authParams.expire,
+        signature: authParams.signature,
+        publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
+
       })
 
+
       const uploadData = {
-        fileId: result.fileId,
+        fileId: result.fileId ?? "",
         url: result.url ?? "",
         name: result.name ?? file.name,
         filePath: result.filePath ?? ""
@@ -137,7 +126,7 @@ export default function createPage() {
         const projectResult = await createProject(
           {
             name: uploadData.name,
-            imageKitId: uploadData.fileId,
+            imageKitId: uploadData.fileId || "",
             imageUrl: uploadData.url,
             filePath: uploadData.filePath,
           }
@@ -340,6 +329,8 @@ export default function createPage() {
       </div>
     )
   }
+
+  
   return (
     <>
       <RedirectToSignIn />
@@ -359,7 +350,7 @@ export default function createPage() {
 
           {/* main content */}
           <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
-            {!upLoadedImage ? (
+            {isUploading ? (
               <div className="border-border from-muted/50 via-background to-muted/30 relative overflow-hidden rounded-2xl border bg-gradient-to-br p-6 text-center shadow-xl sm:p-12">
                 <div className="from-primary/5 to-primary/10 absolute inset-0 bg-gradient-to-br"></div>
                 <div className="relative z-10">
