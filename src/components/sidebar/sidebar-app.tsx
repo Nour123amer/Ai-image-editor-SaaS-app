@@ -56,7 +56,7 @@ export async function AppSidebar() {
           additionalLinks={[
             {
               label: "Customer Portal",
-              href: "/dashboard/customer-portal",
+              href: "/customer-portal",
               icon: <User className="h-4 w-4" />,
             },
             {

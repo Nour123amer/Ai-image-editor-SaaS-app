@@ -12,9 +12,10 @@ import {
   DropdownMenuItem,
 } from "~/components/ui/dropdown-menu"
 import { Button } from '~/components/ui/button'
+import { useRouter } from 'next/navigation'
 
 export default function projectsPage() {
-
+  const router = useRouter()
   const [userProjects, setUserProjects] = useState<object[]>([]);
   const [active, setActive] = useState("newest");
   const [direction, setDirection] = useState("grid");
@@ -55,11 +56,18 @@ export default function projectsPage() {
     <>
       <div className="min-h-screen bg-[#f8fafc] p-4 md:p-12">
         {/* Header Section */}
-        <div className="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+        <div className="  mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className='w-full'>
+            <div className='flex items-center justify-between  '>
+              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               Your Projects
             </h1>
+            <Button 
+            onClick={()=>{router.push("/dashboard/create")}}
+            className='bg-black text-white text-xl px-3 py-2 cursor-pointer'>
+              Add Project
+            </Button>
+            </div>
             <p className="text-slate-500 mt-2 text-lg">
               Manage and continue editing your AI-powered creations.
             </p>
