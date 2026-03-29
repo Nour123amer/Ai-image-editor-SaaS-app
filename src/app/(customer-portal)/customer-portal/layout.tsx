@@ -16,7 +16,7 @@ export default function customerPortalLayout({
               <SidebarProvider>
                 <CustomerPortalSidebar />
                 <SidebarInset className="flex  flex-col ">
-                 <main className="h-[500px] my-auto bg-blue-300 p-6">{children}</main>     
+                 <main className="h-[500px] my-auto p-6 flex items-center justify-center">{children}</main>     
                 </SidebarInset>
             </SidebarProvider>
          </Providers>
