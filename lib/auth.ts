@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, ENV } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 // If your Prisma file is located elsewhere, you can change the path
 import { Polar } from "@polar-sh/sdk";
@@ -17,7 +17,8 @@ import { prisma } from "~/lib/prisma";
 
 
 const polarClient = new Polar({
-    accessToken: process.env.POLAR_ACCESS_TOKEN,
+    accessToken:  process.env.NODE_ENV === "production"? process.env.POLAR_PRODUCTION
+    : process.env.POLAR_ACCESS_TOKEN,
     // Use 'sandbox' if you're using the Polar Sandbox environment
     // Remember that access tokens, products, etc. are completely separated between environments.
     // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
