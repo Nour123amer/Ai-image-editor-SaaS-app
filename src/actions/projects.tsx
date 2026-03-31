@@ -23,7 +23,7 @@ export async function createProject(data:CreateProjectData) {
 
         const project = await db.project.create({
             data: {
-                name:data.name || "untitled project",
+                name:data.name ?? "untitled project",
                 imageKitId: data.imageKitId,
                 imageUrl:data.imageUrl,
                 filePath:data.filePath,
@@ -35,7 +35,7 @@ export async function createProject(data:CreateProjectData) {
 
         return { success : true, project } 
     }catch(error){
-        return {success: false, error:"Failed to create project."}
+        return {success: false, error:error}
     }
     
 }  
@@ -61,7 +61,7 @@ export async function getUserProjects() {
 
         return { success : true, projects}
     }catch(error){
-        return {success: false, error:"Failed to create project."}
+        return {success: false, error:"Failed to create project.", details:error}
     }
     
 }  

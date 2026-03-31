@@ -1,9 +1,43 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
+import { getUser } from '~/actions/userdata'
+import { updateBilling } from '~/actions/updateBilling'
 
-export default function billing() {
+interface User {
+    name: string;
+    email: string;
+
+}
+
+export default function Billing() {
+    const [user,setUser] = useState<User | null>(null);
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    useEffect(()=>{
+        const getUserData = async () => {
+            const userData = await getUser();
+            setUser(userData);
+           console.log("user =>", userData)
+
+        }
+
+       void getUserData();
+    },[])
+
+  
+        const updateUserData = async (e:React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            if (!user) return;
+
+            const updatedData = await updateBilling(user?.name, user?.email);
+ setUser(updatedData);
+    
+        };
+
+  
     return (
         <>
             <div className='flex flex-col gap-6 w-3/4 mx-auto rounded-2xl'>
@@ -23,12 +57,16 @@ export default function billing() {
                     <h3>Billing Details</h3>
                     <p>Update your billing details</p>
                     <hr />
-                    <form>
+                    <form onSubmit={(e)=>{void updateUserData(e)}}>
                         <label className='mb-2 ' htmlFor="email">Email</label> <br />
-                        <Input id="email" placeholder='nour@gmail.com' className='bg-white' /><br />
+                        <Input id="email"
+                        onChange={(e)=>{setEmail(e.target.value)}}
+                         value={email} placeholder={user?.email} className='bg-white' /><br />
 
                         <label className='mb-2 ' htmlFor="billing">Billing Name</label> <br />
-                        <Input id="billing" placeholder='nour' className='bg-white' /><br />
+                        <Input
+                         onChange={(e)=>{setName(e.target.value)}}
+                         value={name} id="billing" placeholder={user?.name} className='bg-white' /><br />
 
                         <label className='mb-3 ' htmlFor="email">Billing address</label> <br />
                         <Input placeholder='Line1' className='bg-white mb-3' /> <br />
@@ -41,7 +79,8 @@ export default function billing() {
                         <label className='mb-2 ' htmlFor="tax">Tax ID</label> <br />
                         <Input id="tax" className='bg-white' /><br />
 
-                       <Button className='bg-gray-400 p-3 my-3 text-white rounded-full'>Update Billing Details</Button>
+                       <Button className='bg-gray-400 p-3 my-3 text-white rounded-full cursor-pointer'>
+                        Update Billing Details</Button>
 
                     </form>
                 </Card>

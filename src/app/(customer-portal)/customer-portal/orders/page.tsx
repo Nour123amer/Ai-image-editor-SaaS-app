@@ -1,4 +1,6 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
+import { getUserProjects } from '~/actions/projects';
 import {
   Card,
   CardContent,
@@ -13,7 +15,22 @@ import {
   TabsTrigger,
 } from "~/components/ui/tabs"
 
-export default function orders() {
+import { type Project } from '../../../(dashboard)/dashboard/create/page'
+
+
+export default function Orders() {
+    const [userProjects, setUserProjects] = useState<Project[]> ([]);
+  
+    useEffect(() => {
+      const userProjects = async ()=> {
+        const projects =await getUserProjects();
+        if(projects?.projects){
+          setUserProjects(projects?.projects);
+        }
+       }
+   
+       void userProjects();
+      },[])
   return (
     <>
    <div className='w-3/4 mx-auto flex flex-col gap-6'>
@@ -72,11 +89,11 @@ export default function orders() {
                 Overview
               </CardTitle>
               <CardDescription className="text-slate-500">
-                View your key metrics and recent project activity. Track progress across all your active projects.
+                View your recent project activity. Track progress across all your active projects.
               </CardDescription>
             </CardHeader>
             <CardContent className="text-sm text-slate-600">
-              You have 12 active projects and 3 pending tasks.
+              You have {userProjects.length? userProjects.length : 0} active projects and 3 pending tasks.
             </CardContent>
           </Card>
         </TabsContent>

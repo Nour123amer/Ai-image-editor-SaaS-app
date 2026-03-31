@@ -1,5 +1,7 @@
+"use client"
 import { Search } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { getUserCredits } from '~/actions/users'
 import {
   Card,
   CardContent,
@@ -15,7 +17,20 @@ import {
   TabsTrigger,
 } from "~/components/ui/tabs"
 
-export default function usage() {
+export default function Usage() {
+
+  const [userCredits, setUserCredits] = useState<number> (0);
+    
+      useEffect(() => {
+        const userCredits = async ()=> {
+          const credits =await getUserCredits();
+          if(credits){
+            setUserCredits(credits);
+          }
+         }
+     
+         void userCredits();
+        },[])
   return (
     <div className='w-3/4 mx-auto flex flex-col gap-6'>
     
@@ -33,6 +48,8 @@ export default function usage() {
                         </div>
             
           </div>
+
+          
     
           {/* Tabs */}
           <Tabs defaultValue="overview">
@@ -114,7 +131,7 @@ export default function usage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="text-sm text-slate-600">
-                  You have 5 reports ready and available to export.
+                  You have {userCredits? userCredits : 0} reports ready and available to export.
                 </CardContent>
               </Card>
             </TabsContent>

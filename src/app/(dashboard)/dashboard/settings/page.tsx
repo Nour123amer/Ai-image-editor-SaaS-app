@@ -9,7 +9,7 @@ import { authClient } from "lib/auth-client";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export default function page() {
+export default function SettingPage() {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(()=>{
         const checkSession = async()=>{

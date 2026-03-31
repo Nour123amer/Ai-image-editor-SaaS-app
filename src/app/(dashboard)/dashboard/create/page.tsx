@@ -18,7 +18,13 @@ interface UploadImage {
   name: string;
 }
 
-interface Project {
+interface CreditResult {
+  success: boolean;
+  remainingCredits?: number | { credits: number };
+  error?: string;
+}
+
+export interface Project {
   id: string;
   name: string | null;
   imageUrl: string;
@@ -42,7 +48,7 @@ interface UploadAuthResponse {
   publicKey: string;
 }
 
-export default function createPage() {
+export default function CreatePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
@@ -52,7 +58,6 @@ export default function createPage() {
   const [userProjects, setUserProjects] = useState<Project[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [objectInput, setObjectInput] = useState("");
-  const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
 
@@ -204,20 +209,28 @@ export default function createPage() {
     setIsProcessing(true);
 
     try {
-      const creditResult = await deducateCredits(2, "background removed!");
+      const creditResult:CreditResult = await deducateCredits(2, "background removed!");
       if (!creditResult.success) {
         toast.error(creditResult.error ?? "failed to process payment");
         setIsProcessing(false);
         return;
       }
+      console.log("creditresult",creditResult)
+
+      const remaining = typeof creditResult?.remainingCredits === "number"
+        ? creditResult?.remainingCredits
+        : (creditResult?.remainingCredits as { credits: number } | undefined)?.credits ?? 0;
+
 
       //apply background removal function
       setTransformations((prev) => [...prev, { aiRemoveBackground: true }]);
 
+
       setTimeout(() => {
         setIsProcessing(false);
+
         toast.success(`
-            background removed ${creditResult.remainingCredits} remaining credits
+            background removed ${remaining} remaining credits
             `)
 
         // refresh to update idebar credits
@@ -242,7 +255,12 @@ export default function createPage() {
 
     setIsProcessing(false);
     try {
-      const creditResult = await deducateCredits(1, "upscaling");
+      const creditResult: CreditResult = await deducateCredits(1, "upscaling");
+      const remaining =
+  typeof creditResult.remainingCredits === "number"
+    ? creditResult.remainingCredits
+    : (creditResult.remainingCredits as { credits: number } | undefined)?.credits ?? 0;
+
       if (!creditResult.success) {
         toast.error(creditResult.error ?? "Failed to process payment");
         setIsProcessing(false);
@@ -252,7 +270,7 @@ export default function createPage() {
       setTransformations((prev) => [...prev, { aiUpscale: true }]);
       setTimeout(() => {
         setIsProcessing(false);
-        toast.success(`image upscaled ${creditResult.remainingCredits} credits remaining`)
+        toast.success(`image upscaled ${remaining} credits remaining`)
         router.refresh();
       }, 3000);
 
@@ -281,7 +299,7 @@ export default function createPage() {
 
     try {
       const cleanInput = objectInput.trim().toLowerCase();
-      const transformation = { raw: `fo-${cleanInput},ar-1-1` };
+      const transformation = { raw: `fo-${cleanInput},ar-1-1,c-maintain_ratio` };
 
       setTransformations((prev) => [...prev, transformation]);
 
@@ -330,7 +348,7 @@ export default function createPage() {
     )
   }
 
-  
+
   return (
     <>
       <RedirectToSignIn />
@@ -709,15 +727,20 @@ export default function createPage() {
                       </div>
                     </div>
                   )}
-                  <ImageKitImage
-                    urlEndpoint={process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
-                    src={upLoadedImage?.filePath}
-                    alt={upLoadedImage?.name}
-                    width={800}
-                    height={600}
-                    className="h-auto max-h-150 w-full object-contain"
-                  // transformation={getLivePreviewTransformations()}
-                  />
+
+                  {upLoadedImage?.filePath && (
+                    <ImageKitImage
+                      urlEndpoint={process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
+                      src={upLoadedImage?.filePath}
+                      alt={upLoadedImage?.name}
+                      width={800}
+                      height={600}
+                      className="h-auto max-h-150 w-full object-contain"
+                      transformation={getLivePreviewTransformation()}
+                    />
+                  )}
+
+
                 </div>
               </CardContent>
             </Card>
@@ -781,22 +804,25 @@ export default function createPage() {
 
                     {/* Main image */}
                     <div className="relative h-full w-full overflow-hidden">
-                      <ImageKitImage
-                        urlEndpoint={process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
-                        src={project.filePath}
-                        alt={project.name}
-                        width={300}
-                        height={300}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        transformation={[
-                          {
-                            width: 300,
-                            height: 300,
-                            crop: "maintain_ratio",
-                            quality: 90,
-                          }
-                        ]}
-                      />
+                      {project?.filePath && (
+                        <ImageKitImage
+                          urlEndpoint={process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
+                          src={project.filePath}
+                          alt={project.name ?? "project image"}
+                          width={300}
+                          height={300}
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          transformation={[
+                            {
+                              width: 300,
+                              height: 300,
+                              crop: "maintain_ratio",
+                              quality: 90,
+                            }
+                          ]}
+                        />
+                      )}
+
                       {/* Shimmer effect on hover */}
                       <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-transform duration-1000 group-hover:translate-x-full group-hover:opacity-100"></div>
 

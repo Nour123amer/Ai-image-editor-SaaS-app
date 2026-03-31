@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 // If your Prisma file is located elsewhere, you can change the path
@@ -58,7 +57,7 @@ export const auth = betterAuth({
                 portal(),
                 usage(),
                 webhooks({
-                    secret: process.env.POLAR_WEBHOOK_SECRET,
+                    secret: process.env.POLAR_WEBHOOK_SECRET ??"",
                     onOrderPaid: async(order) =>{
                         const externalCustomerId = order.data.customer.id;
 

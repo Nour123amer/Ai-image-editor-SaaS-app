@@ -1,5 +1,5 @@
 "use client"
-import { Calendar, ChevronDown, Grid3x2, LayoutGrid, List, Logs, Search } from 'lucide-react'
+import { Calendar, ChevronDown, LayoutGrid, List, Search } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { getUserProjects } from '~/actions/projects'
 import { Card, CardContent } from '~/components/ui/card'
@@ -13,10 +13,11 @@ import {
 } from "~/components/ui/dropdown-menu"
 import { Button } from '~/components/ui/button'
 import { useRouter } from 'next/navigation'
+import type { Project } from '../create/page'
 
-export default function projectsPage() {
+export default function ProjectsPage() {
   const router = useRouter()
-  const [userProjects, setUserProjects] = useState<object[]>([]);
+  const [userProjects, setUserProjects] = useState<Project[]>([]);
   const [active, setActive] = useState("newest");
   const [direction, setDirection] = useState("grid");
 
@@ -28,14 +29,15 @@ export default function projectsPage() {
 
       if (result?.projects) {
         setUserProjects(result?.projects);
+        console.log(result)
       }
     }
 
-    loadProjects()
+   void loadProjects()
   }, [])
 
   const sortedProjects = useMemo(()=>{
-    return [...userProjects].sort((a: any, b: any) => {
+    return [...userProjects].sort((a: Project, b: Project) => {
     if (active === "newest") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     }
@@ -45,7 +47,7 @@ export default function projectsPage() {
     }
 
     if (active === "alphabetical") {
-      return (a.name||"").localeCompare(b.name ||"")
+      return (a.name??"").localeCompare(b.name ??"")
     }
 
     return 0;
@@ -130,7 +132,7 @@ export default function projectsPage() {
                 ? "grid-cols-1"
                 : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
               }`}>
-              {sortedProjects.map((project: any) => (
+              {sortedProjects.map((project: Project) => (
                 <div
                   key={project.id}
                   className={`group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 overflow-hidden flex ${direction === "list" ? "flex-row h-40" : "flex-col"
@@ -141,7 +143,7 @@ export default function projectsPage() {
                     }`}>
                     <img
                       src={project.imageUrl}
-                      alt={project.name}
+                      alt={project.name ?? "project image"}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
@@ -151,7 +153,7 @@ export default function projectsPage() {
                   <div className="p-5 flex flex-col justify-between flex-grow">
                     <div>
                       <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
-                        {project.name || "Untitled Project"}
+                        {project.name ?? "Untitled Project"}
                       </h3>
                       <div className="flex items-center gap-2 mt-2 text-slate-500">
                         <Calendar className="w-3.5 h-3.5" />

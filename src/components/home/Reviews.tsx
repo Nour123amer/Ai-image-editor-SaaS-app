@@ -40,7 +40,7 @@ export default function Reviews() {
               {"★★★★★"}
             </div>
 
-            <p className="text-gray-600 text-sm mb-4">"{review.text}"</p>
+            <p className="text-gray-600 text-sm mb-4">{review.text}</p>
 
             <div>
               <p className="font-semibold">{review.name}</p>

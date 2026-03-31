@@ -14,11 +14,11 @@ export function Providers({ children }: { children: ReactNode }) {
     return (
         <AuthUIProvider
             authClient={authClient}
-            navigate={router.push}
-            replace={router.replace}
+            navigate={(url)=>router.push(url)}
+            replace={(url)=>router.replace(url)}
             onSessionChange={ async () => {
                 // Clear router cache (protected routes)
-                router.refresh()
+               void router.refresh()
 
                 // check if user is authenticated && redirect to dashboard
                 try {
@@ -27,7 +27,7 @@ export function Providers({ children }: { children: ReactNode }) {
                         const currentPath = window.location.pathname;
                         // only redirect if we are on an auth page
                         if(currentPath.startsWith("/auth/")){
-                            router.push("/dashboard")
+                           void router.push("/dashboard")
                         }
                     }
                 }catch(err){

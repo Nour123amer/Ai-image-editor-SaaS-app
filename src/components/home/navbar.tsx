@@ -1,12 +1,9 @@
 "use client";
-
-import { RedirectToSignIn } from "@daveyplate/better-auth-ui";
 import {
     Navbar,
     NavbarBrand,
     NavbarContent,
     NavbarMenuToggle,
-    NavbarMenu,
     NavbarMenuItem,
     Link,
     NavbarItem,
