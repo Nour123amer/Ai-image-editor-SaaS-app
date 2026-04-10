@@ -1,11 +1,20 @@
 "use client";
-
 import { authClient } from "lib/auth-client";
 import { Button } from "../ui/button";
 import { Crown, Sparkles } from "lucide-react";
 
 export default function Upgrade() {
+
   const upgrade = async () => {
+     const session = await authClient.getSession();
+     console.log("session =>", session)
+
+  if (!session?.data?.user) {
+    console.log("User not logged in");
+    return;
+  }
+
+    try {
     await authClient.checkout({
       products: [
         "6c84189e-1ce2-4214-ac43-b439bb1e544e",
@@ -13,6 +22,9 @@ export default function Upgrade() {
         "dd2f6988-aa65-476f-abec-f25c2ba0c58b",
       ],
     });
+     } catch (err) {
+      console.error("Checkout error:", err);
+    }
   };
 
   return (

@@ -8,7 +8,7 @@ export async function getUser() {
    const session = await auth.api.getSession({
     headers: await headers(),
    });
- console.log(db)
+ console.log("db:", db);
    if(!session) return null;
 
    const user = await db.user.findUniqueOrThrow({

@@ -8,14 +8,14 @@ export async function GET() {
     try {
 
         console.log("PUBLIC KEY:", process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY);
+        console.log("KEY:", process.env.POLAR_API_KEY);
+        console.log("Using Polar token:", process.env.POLAR_API_KEY);
         const { token, expire, signature } = getUploadAuthParams({
             privateKey: process.env.IMAGEKIT_PRIVATE_KEY!, // Never expose this on client side
             publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
             // expire: 30 * 60, // Optional, controls the expiry time of the token in seconds, maximum 1 hour in the future
             // token: "random-token", // Optional, a unique token for request
         })
-
- 
 
         return Response.json({
              token,
@@ -31,8 +31,4 @@ export async function GET() {
         { status: 500}
     )
     }
-
-
-
-
 }

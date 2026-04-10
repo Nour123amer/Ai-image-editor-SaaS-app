@@ -12,6 +12,8 @@ interface CreateProjectData {
 
 
 export async function createProject(data:CreateProjectData) {
+            console.log("POLAR_API_KEY:", process.env.POLAR_API_KEY);
+
     try{
         const session = await auth.api.getSession({
             headers: await headers()

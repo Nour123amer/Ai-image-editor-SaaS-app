@@ -5,6 +5,8 @@ export default async function Credits() {
   const result = await getUserCredits();
   const credits = result ?? result ?? 10;
   console.log( "credits =>", result)
+          console.log("KEY:", process.env.POLAR_API_KEY);
+
 
   return (
     <div className="group flex items-center gap-2">
