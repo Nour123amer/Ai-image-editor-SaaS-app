@@ -9,7 +9,7 @@ export default function Upgrade() {
     const session = await authClient.getSession();
     console.log("session =>", session);
 
-    let products = process.env.NODE_ENV === "development" ? [
+    const products = process.env.NODE_ENV === "development" ? [
       "5d5772f0-fe96-42ff-8d9d-2bff6f1e7ffa", 
           "9f616e5c-8a36-448c-801a-c82a6ee07426",
           "bf914353-33dc-41fe-9b6b-6f10c7a6687a",
