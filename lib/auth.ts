@@ -23,7 +23,37 @@ const polarClient = new Polar({
     server: process.env.NODE_ENV === "production" ? 'production' : 'sandbox'
 });
 
+ const products = process.env.NODE_ENV === "production" ? [
+          {
+                            productId: "e70fef4c-942a-4098-8d26-f31b3307f0ed", // ID of Product from Polar Dashboard
+                            slug: "100-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                        },
+                        {
+                            productId: "dca88f28-596a-4e22-89b6-1b0f6d0f9fc5", // ID of Product from Polar Dashboard
+                            slug: "200-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                        },
+                        {
+                            productId: "a8ff4fa7-4d11-414d-a498-69eeaa5b1b74", // ID of Product from Polar Dashboard
+                            slug: "50-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                        }
+    ]:
+     [
+                        {
+                            productId: "5d5772f0-fe96-42ff-8d9d-2bff6f1e7ffa", // ID of Product from Polar Dashboard
+                            slug: "100-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                        },
+                        {
+                            productId: "9f616e5c-8a36-448c-801a-c82a6ee07426", // ID of Product from Polar Dashboard
+                            slug: "200-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                        },
+                        {
+                            productId: "bf914353-33dc-41fe-9b6b-6f10c7a6687a", // ID of Product from Polar Dashboard
+                            slug: "50-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                        }
+                    ];
+
 export const auth = betterAuth({
+   
 
     database: prismaAdapter(prisma, {
         provider: "postgresql"
@@ -37,20 +67,21 @@ export const auth = betterAuth({
             createCustomerOnSignUp: true,
             use: [
                 checkout({
-                    products: [
-                        {
-                            productId: "5d5772f0-fe96-42ff-8d9d-2bff6f1e7ffa", // ID of Product from Polar Dashboard
-                            slug: "100-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
-                        },
-                        {
-                            productId: "9f616e5c-8a36-448c-801a-c82a6ee07426", // ID of Product from Polar Dashboard
-                            slug: "200-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
-                        },
-                        {
-                            productId: "bf914353-33dc-41fe-9b6b-6f10c7a6687a", // ID of Product from Polar Dashboard
-                            slug: "50-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
-                        }
-                    ],
+                    products: products,
+                    // [
+                    //     {
+                    //         productId: "5d5772f0-fe96-42ff-8d9d-2bff6f1e7ffa", // ID of Product from Polar Dashboard
+                    //         slug: "100-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                    //     },
+                    //     {
+                    //         productId: "9f616e5c-8a36-448c-801a-c82a6ee07426", // ID of Product from Polar Dashboard
+                    //         slug: "200-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                    //     },
+                    //     {
+                    //         productId: "bf914353-33dc-41fe-9b6b-6f10c7a6687a", // ID of Product from Polar Dashboard
+                    //         slug: "50-credits" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                    //     }
+                    // ],
                     successUrl: "/success?checkout_id={CHECKOUT_ID}",
                     authenticatedUsersOnly: true
                 }),
